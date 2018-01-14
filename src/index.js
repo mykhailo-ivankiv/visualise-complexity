@@ -1,41 +1,29 @@
-import Complexity from "./Complexity"
-import GoodAlgo from "./GoodAlgo";
-import BadAlgo from "./BadAlgo";
-import {getRandom} from "./utils";
-import {MARGIN_FROM_SIDES, NUMBER_OF_NUMBERS} from "./consts";
-import MyNumber from "./Number";
+import AlgorithmVisualiser from "./AlgorithmVisualiser"
+import Canvas from "./Canvas";
 
-import AlgoVisualiser from "./AlgoVisualiser"
+import {getRandom, range} from "./utils";
+import {NUMBER_OF_NUMBERS} from "./config";
+import badAlgorithm from "./_badAlgorithm";
+import goodAlgorithm from "./_goodAlgorithm";
 
-const elForGoodAlgo = document.querySelector(".content__algo_good");
-const elBadAlgo = document.querySelector(".content__algo_bad");
+const numbers = range(NUMBER_OF_NUMBERS, () => getRandom(1, NUMBER_OF_NUMBERS + 1))
 
-const goodAlgo = new GoodAlgo( elForGoodAlgo);
-const badAlgo = new BadAlgo( elBadAlgo);
+const badCanvas = new Canvas (".content__algo_bad");
+const goodCanvas = new Canvas (".content__algo_good");
+const {width, height} = badCanvas;
+const a = new AlgorithmVisualiser(numbers, width, height);
 
-const numbers = new Array(NUMBER_OF_NUMBERS)
-    .fill()
-    .map(() =>
-        new MyNumber(
-            getRandom(MARGIN_FROM_SIDES, goodAlgo.width - MARGIN_FROM_SIDES), //x
-            getRandom(MARGIN_FROM_SIDES, goodAlgo.height - MARGIN_FROM_SIDES), //y
-            getRandom(1, NUMBER_OF_NUMBERS + 1) //number
-        ));
+a.drawOn(badCanvas.ctx)
+ .drawOn(goodCanvas.ctx);
 
-const a = new Complexity(goodAlgo, numbers)
-a
-    .action()
-    .then( value => {
-        let elem = document.querySelector(".result__good");
-        value.map((el) => elem.appendChild(a.renderNumber(el, "result__missing-numbers_good")));
-    });
+a.performOn(badCanvas.ctx, badAlgorithm)
+    .then ( value => {
+        document.querySelector(".result__bad").innerHTML =
+        value.map( el => `<span class="result__missing-numbers result__missing-numbers_bad">${el}</span>`).join("")
+    })
 
-
-
-const b = new Complexity(badAlgo, numbers)
-
-b.action()
-    .then( value => {
-        let elem = document.querySelector(".result__bad");
-        value.map((el) => elem.appendChild(b.renderNumber(el, "result__missing-numbers_bad")));
-    });
+a.performOn(goodCanvas.ctx, goodAlgorithm)
+    .then ( value => {
+        document.querySelector(".result__good").innerHTML =
+            value.map( el => `<span class="result__missing-numbers result__missing-numbers_good">${el}</span>`).join("")
+    })

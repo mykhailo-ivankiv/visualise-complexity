@@ -67,225 +67,198 @@
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */
+/* 0 */,
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config__ = __webpack_require__(10);
+
+
+const getRandom = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = getRandom;
+
+
+const sleepFor = sleepDuration =>
+  new Promise((res, rej) => setTimeout(res, sleepDuration));
+/* harmony export (immutable) */ __webpack_exports__["c"] = sleepFor;
+
+
+const range = (n, fn) => new Array(n).fill().map(fn);
+/* harmony export (immutable) */ __webpack_exports__["a"] = range;
+
+
+
+/***/ }),
+/* 2 */,
+/* 3 */,
+/* 4 */,
+/* 5 */,
+/* 6 */,
+/* 7 */,
+/* 8 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AlgorithmVisualiser__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Canvas__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__config__ = __webpack_require__(10);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__badAlgorithm__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__goodAlgorithm__ = __webpack_require__(14);
+
+
+
+
+
+
+
+
+const numbers = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__utils__["a" /* range */])(__WEBPACK_IMPORTED_MODULE_3__config__["a" /* NUMBER_OF_NUMBERS */], () => __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__utils__["b" /* getRandom */])(1, __WEBPACK_IMPORTED_MODULE_3__config__["a" /* NUMBER_OF_NUMBERS */] + 1))
+
+const badCanvas = new __WEBPACK_IMPORTED_MODULE_1__Canvas__["a" /* default */] (".content__algo_bad");
+const goodCanvas = new __WEBPACK_IMPORTED_MODULE_1__Canvas__["a" /* default */] (".content__algo_good");
+const {width, height} = badCanvas;
+const a = new __WEBPACK_IMPORTED_MODULE_0__AlgorithmVisualiser__["a" /* default */](numbers, width, height);
+
+a.drawOn(badCanvas.ctx)
+ .drawOn(goodCanvas.ctx);
+
+a.performOn(badCanvas.ctx, __WEBPACK_IMPORTED_MODULE_4__badAlgorithm__["a" /* default */])
+    .then ( value => {
+        document.querySelector(".result__bad").innerHTML =
+        value.map( el => `<span class="result__missing-numbers result__missing-numbers_bad">${el}</span>`).join("")
+    })
+
+a.performOn(goodCanvas.ctx, __WEBPACK_IMPORTED_MODULE_5__goodAlgorithm__["a" /* default */])
+    .then ( value => {
+        document.querySelector(".result__good").innerHTML =
+            value.map( el => `<span class="result__missing-numbers result__missing-numbers_good">${el}</span>`).join("")
+    })
+
+/***/ }),
+/* 9 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+class Canvas {
+    constructor (query) {
+        const el = document.querySelector(query);
+        const ctx = el.getContext("2d");
+        const { height, width } = el.getBoundingClientRect();
+
+        el.height = height;
+        el.width = width;
+
+        Object.assign(this, { ctx, el, height, width });
+    }
+}
+/* harmony default export */ __webpack_exports__["a"] = (Canvas);
+
+/***/ }),
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 const NUMBER_OF_NUMBERS = 50;
 /* harmony export (immutable) */ __webpack_exports__["a"] = NUMBER_OF_NUMBERS;
 
+
+/***/ }),
+/* 11 */,
+/* 12 */,
+/* 13 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config__ = __webpack_require__(10);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (async (numbers, { interrupter, remove, done }) => {
+    let missingNumbers = [];
+    for (let i = 1; i <= __WEBPACK_IMPORTED_MODULE_0__config__["a" /* NUMBER_OF_NUMBERS */]; ++i) {
+        let exist = false;
+
+        for (let j = 0; j < __WEBPACK_IMPORTED_MODULE_0__config__["a" /* NUMBER_OF_NUMBERS */]; ++j) {
+            await interrupter();
+
+            if (i == numbers[j]) {
+                //Important! leave `==` for Type conversion
+                remove(numbers[j]);
+                exist = true;
+            }
+        }
+
+        if (!exist) {
+            missingNumbers.push(i);
+        }
+    }
+
+    done(missingNumbers);
+});
+
+
+/***/ }),
+/* 14 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__config__ = __webpack_require__(10);
+
+
+/* harmony default export */ __webpack_exports__["a"] = (async (numbers, { interrupter, remove, done}) => {
+    let missingNumbers = [];
+    const countNumbers = new Array(__WEBPACK_IMPORTED_MODULE_0__config__["a" /* NUMBER_OF_NUMBERS */] + 1).fill(0);
+    const indexNumbers = new Array(__WEBPACK_IMPORTED_MODULE_0__config__["a" /* NUMBER_OF_NUMBERS */] + 1).fill().map(() => new Array(__WEBPACK_IMPORTED_MODULE_0__config__["a" /* NUMBER_OF_NUMBERS */] + 1));
+    for (let i = 0; i < numbers.length; ++i) {
+        await interrupter();
+        countNumbers[numbers[i]]++;
+        indexNumbers[numbers[i]].push(i);
+    }
+    for (let i = 1; i < countNumbers.length; ++i) {
+        await interrupter();
+        if (countNumbers[i] === 0) {
+            missingNumbers.push(i);
+        }
+        else {
+            indexNumbers[i].map((el) => {
+                remove(numbers[el]);
+            });
+        }
+    }
+
+    done(missingNumbers);
+});
+
+/***/ }),
+/* 15 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(1);
+
+
 const K = 0.5;
-/* harmony export (immutable) */ __webpack_exports__["c"] = K;
+/* unused harmony export K */
 
 const MARGIN_FROM_SIDES = 10;
-/* harmony export (immutable) */ __webpack_exports__["b"] = MARGIN_FROM_SIDES;
+/* unused harmony export MARGIN_FROM_SIDES */
 
 
-/***/ }),
-/* 1 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const getRandom = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
-};
-/* harmony export (immutable) */ __webpack_exports__["a"] = getRandom;
-
-
-
-const sleepFor = (sleepDuration) => new Promise((res, rej) => setTimeout(res, sleepDuration));
-/* harmony export (immutable) */ __webpack_exports__["b"] = sleepFor;
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__consts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Algo__ = __webpack_require__(5);
-
-
-
-
-class BadAlgo extends __WEBPACK_IMPORTED_MODULE_2__Algo__["a" /* default */] {
-    async perform(numbers) { // numbers instanceof Numbers
-        let missingNumbers = [];
-
-        for (let i = 1; i <= __WEBPACK_IMPORTED_MODULE_1__consts__["a" /* NUMBER_OF_NUMBERS */]; ++i) {
-            let exist = false;
-
-            for (let j = 0; j < __WEBPACK_IMPORTED_MODULE_1__consts__["a" /* NUMBER_OF_NUMBERS */]; ++j) {
-                await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__utils__["b" /* sleepFor */])(__WEBPACK_IMPORTED_MODULE_1__consts__["c" /* K */]);
-                if (i === numbers[j].number) {
-                    numbers[j].undraw(this.context);
-                    exist = true;
-                }
-            }
-
-            if (!exist) {
-                missingNumbers.push(i);
-            }
-        }
-        return missingNumbers;
-    };
-
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (BadAlgo);
-
-/***/ }),
-/* 3 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__consts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Algo__ = __webpack_require__(5);
-
-
-
-
-class GoodAlgo extends __WEBPACK_IMPORTED_MODULE_2__Algo__["a" /* default */] {
-    async perform(numbers) {
-        let missingNumbers = [];
-        const countNumbers = new Array(__WEBPACK_IMPORTED_MODULE_1__consts__["a" /* NUMBER_OF_NUMBERS */] + 1).fill(0);
-        const indexNumbers = new Array(__WEBPACK_IMPORTED_MODULE_1__consts__["a" /* NUMBER_OF_NUMBERS */] + 1).fill().map(() => new Array(__WEBPACK_IMPORTED_MODULE_1__consts__["a" /* NUMBER_OF_NUMBERS */] + 1));
-        for (let i = 0; i < numbers.length; ++i) {
-            await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__utils__["b" /* sleepFor */])(__WEBPACK_IMPORTED_MODULE_1__consts__["c" /* K */]);
-            countNumbers[numbers[i].number]++;
-            indexNumbers[numbers[i].number].push(i);
-        }
-        for (let i = 1; i < countNumbers.length; ++i) {
-            await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__utils__["b" /* sleepFor */])(__WEBPACK_IMPORTED_MODULE_1__consts__["c" /* K */]);
-            if (countNumbers[i] === 0) {
-                missingNumbers.push(i);
-            }
-            else {
-                indexNumbers[i].map((el) => {
-                    numbers[el].undraw(this.context);
-                });
-            }
-        }
-        return missingNumbers;
-    };
-
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (GoodAlgo);
-
-/***/ }),
-/* 4 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class MyNumber {
-    // TODO: make good undraw function
-    constructor(x, y, number) {
-        Object.assign(this, {x, y, number});
-    }
-
-    getPath() {
-        const path = new Path2D();
-        path.arc(this.x, this.y, 7.5*2, 0, Math.PI * 2, true); // Outer circle
-        return path;
-    }
-
-    draw(ctx) {
-        ctx.save();
-        ctx.fillStyle = `#2980b9`;
-        ctx.fill(this.getPath());
-        ctx.fillStyle = "#ecf0f1";
-        ctx.fillText(this.number, this.x - 6, this.y + 3);
-        ctx.restore();
-    }
-
-    undraw(ctx) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'destination-out';
-        ctx.fillStyle = `black`;
-        ctx.fill(this.getPath());
-        ctx.fillText(this.number, this.x - 6, this.y + 3);
-        ctx.restore();
-    }
-}
-
-
-/* harmony default export */ __webpack_exports__["a"] = (MyNumber);
-
-/***/ }),
-/* 5 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-class Algo {
-    constructor( rect) {
-        const context = rect.getContext('2d');
-        const {height, width} = rect.getBoundingClientRect();
-
-        rect.height = height;
-        rect.width = width;
-
-        Object.assign(this, {context, rect, height, width})
-    }
-
-    async perform(numbers) {
-        console.log("Please implement your own perform method");
-    }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Algo);
-
-/***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__consts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(1);
-
-
-
-function* id() {
-  let i = 0;
-  while (true) {
-    yield i++;
-  }
-}
-
-const getId = id();
-
-class NumberWrapper extends Number {
-  constructor(n) {
-    super(n);
-    this.id = getId.next().value;
-  }
-}
-
-class AlgoVisualiser {
-  constructor(el, data) {
-    const context = el.getContext("2d");
-    const { height, width } = el.getBoundingClientRect();
-
-    el.height = height;
-    el.width = width;
-
-    Object.assign(this, { context, el, height, width });
-
-
-    this.data = data.map(n => new NumberWrapper(n));
-
+class AlgorithmVisualiser {
+  constructor(data, width, height) {
+    this.data = data.map(n => new Number(n));
     this.objects = new Map();
 
     this.data.map(d => {
       const point = [
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* getRandom */])(__WEBPACK_IMPORTED_MODULE_0__consts__["b" /* MARGIN_FROM_SIDES */], this.width - __WEBPACK_IMPORTED_MODULE_0__consts__["b" /* MARGIN_FROM_SIDES */]), //x
-        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* getRandom */])(__WEBPACK_IMPORTED_MODULE_0__consts__["b" /* MARGIN_FROM_SIDES */], this.height - __WEBPACK_IMPORTED_MODULE_0__consts__["b" /* MARGIN_FROM_SIDES */]) //y
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__utils__["b" /* getRandom */])(MARGIN_FROM_SIDES, width - MARGIN_FROM_SIDES), //x
+        __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__utils__["b" /* getRandom */])(MARGIN_FROM_SIDES, height - MARGIN_FROM_SIDES) //y
       ];
 
       this.objects.set(d, point);
@@ -293,187 +266,58 @@ class AlgoVisualiser {
   }
 
   async interrupter() {
-    await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils__["b" /* sleepFor */])(__WEBPACK_IMPORTED_MODULE_0__consts__["c" /* K */]);
+    await __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_0__utils__["c" /* sleepFor */])(K);
   }
 
-  getShape (x, y)  {
-      const path = new Path2D();
-      path.arc(x, y, 7.5*2, 0, Math.PI * 2, true); // Outer circle
-      return path;
+  getShape(x, y) {
+    const path = new Path2D();
+    path.arc(x, y, 7.5 * 2, 0, Math.PI * 2, true); // Outer circle
+    return path;
   }
 
-  draw() {
-
-
-      for (let number of this.objects.keys() ) {
-          this.add(number);
-      }
+  drawOn(ctx) {
+    this.data.forEach( number => this.add(ctx, number))
+    return this;
   }
 
-  add( number) {
-      const [x,y] = this.objects.get(number);
-      const ctx = this.context;
+  add(ctx, number) {
+    const [x, y] = this.objects.get(number);
 
-      ctx.save();
-      ctx.fillStyle = `#2980b9`;
-      ctx.fill(this.getShape(x,y));
-      ctx.fillStyle = "#ecf0f1";
-      ctx.fillText( number, x - 6, y + 3);
-      ctx.restore();
+    ctx.save();
+    ctx.fillStyle = `#2980b9`;
+    ctx.fill(this.getShape(x, y));
+    ctx.fillStyle = "#ecf0f1";
+    ctx.fillText(number, x - 6, y + 3);
+    ctx.restore();
   }
 
-  remove(d) {
-    const ctx = this.context;
-    const [x,y] = this.objects.get(d);
-      ctx.save();
-      ctx.globalCompositeOperation = 'destination-out';
-      ctx.fillStyle = `black`;
-      ctx.fill(this.getShape(x, y));
-      ctx.fillText(d, x - 6, y + 3);
-      ctx.restore();
+  remove(ctx, number) {
+    const [x, y] = this.objects.get(number);
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+    ctx.fillStyle = `black`;
+    ctx.fill(this.getShape(x, y));
+    ctx.restore();
+
+    ctx.save();
+    ctx.fillStyle = `#2980b9`;
+    ctx.fillText(number, x - 6, y + 3);
+    ctx.restore();
   }
 
-  perform(fn) {
-    fn(this.data, {
-      interrupter: this.interrupter,
-      remove: this.remove.bind(this)
+  performOn(ctx, fn) {
+    return new Promise((res, rej) => {
+      fn(this.data.slice(), {
+        interrupter: this.interrupter.bind(this),
+        remove: this.remove.bind(this, ctx),
+        done: res,
+        error: rej
+      });
     });
   }
 }
 
-const numbers = new Array(__WEBPACK_IMPORTED_MODULE_0__consts__["a" /* NUMBER_OF_NUMBERS */])
-  .fill()
-  .map(() => __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* getRandom */])(1, __WEBPACK_IMPORTED_MODULE_0__consts__["a" /* NUMBER_OF_NUMBERS */] + 1));
-
-const a = new AlgoVisualiser(document.getElementById("test"), numbers);
-
-a.draw();
-a.perform(async (numbers, { interrupter, remove }) => {
-  let missingNumbers = [];
-
-  for (let i = 1; i <= __WEBPACK_IMPORTED_MODULE_0__consts__["a" /* NUMBER_OF_NUMBERS */]; ++i) {
-    let exist = false;
-
-    for (let j = 0; j < __WEBPACK_IMPORTED_MODULE_0__consts__["a" /* NUMBER_OF_NUMBERS */]; ++j) {
-      await interrupter();
-
-      if (i == numbers[j]) {
-        //Important! leave `==` for Type conversion
-        remove(numbers[j]);
-        exist = true;
-      }
-    }
-
-    if (!exist) {
-      missingNumbers.push(i);
-    }
-  }
-  console.log("missingNumbers", numbers, missingNumbers);
-  return missingNumbers;
-});
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Number__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__GoodAlgo__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__consts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__BadAlgo__ = __webpack_require__(2);
-
-
-
-
-
-
-//TODO: add good delay between deleting symbols
-class Complexity {
-    constructor(algo, numbers) {
-        this.algo = algo;
-        this.numbers = numbers;
-        this.generatePoints()
-    }
-
-    generatePoints() {
-        this.numbers.map((el) => {
-            el.draw(this.algo.context);
-        });
-        return this;
-    };
-
-    renderNumber(number, modifier) {
-        let nd = document.createElement("span");
-        nd.textContent = number;
-        nd.classList.add("result__missing-numbers");
-        nd.classList.add(modifier);
-        return nd;
-    }
-
-
-    action() {
-        return this.algo.perform(this.numbers);
-    }
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (Complexity);
-
-/***/ }),
-/* 8 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Complexity__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__GoodAlgo__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__BadAlgo__ = __webpack_require__(2);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(1);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__consts__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__Number__ = __webpack_require__(4);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__AlgoVisualiser__ = __webpack_require__(6);
-
-
-
-
-
-
-
-
-
-const elForGoodAlgo = document.querySelector(".content__algo_good");
-const elBadAlgo = document.querySelector(".content__algo_bad");
-
-const goodAlgo = new __WEBPACK_IMPORTED_MODULE_1__GoodAlgo__["a" /* default */]( elForGoodAlgo);
-const badAlgo = new __WEBPACK_IMPORTED_MODULE_2__BadAlgo__["a" /* default */]( elBadAlgo);
-
-const numbers = new Array(__WEBPACK_IMPORTED_MODULE_4__consts__["a" /* NUMBER_OF_NUMBERS */])
-    .fill()
-    .map(() =>
-        new __WEBPACK_IMPORTED_MODULE_5__Number__["a" /* default */](
-            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__utils__["a" /* getRandom */])(__WEBPACK_IMPORTED_MODULE_4__consts__["b" /* MARGIN_FROM_SIDES */], goodAlgo.width - __WEBPACK_IMPORTED_MODULE_4__consts__["b" /* MARGIN_FROM_SIDES */]), //x
-            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__utils__["a" /* getRandom */])(__WEBPACK_IMPORTED_MODULE_4__consts__["b" /* MARGIN_FROM_SIDES */], goodAlgo.height - __WEBPACK_IMPORTED_MODULE_4__consts__["b" /* MARGIN_FROM_SIDES */]), //y
-            __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_3__utils__["a" /* getRandom */])(1, __WEBPACK_IMPORTED_MODULE_4__consts__["a" /* NUMBER_OF_NUMBERS */] + 1) //number
-        ));
-
-const a = new __WEBPACK_IMPORTED_MODULE_0__Complexity__["a" /* default */](goodAlgo, numbers)
-a
-    .action()
-    .then( value => {
-        let elem = document.querySelector(".result__good");
-        value.map((el) => elem.appendChild(a.renderNumber(el, "result__missing-numbers_good")));
-    });
-
-
-
-const b = new __WEBPACK_IMPORTED_MODULE_0__Complexity__["a" /* default */](badAlgo, numbers)
-
-b.action()
-    .then( value => {
-        let elem = document.querySelector(".result__bad");
-        value.map((el) => elem.appendChild(b.renderNumber(el, "result__missing-numbers_bad")));
-    });
+/* harmony default export */ __webpack_exports__["a"] = (AlgorithmVisualiser);
 
 
 /***/ })

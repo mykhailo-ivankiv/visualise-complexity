@@ -28,7 +28,7 @@ class AlgorithmVisualiser {
     return path;
   }
 
-  drawOn(ctx) {
+  drawDataOn(ctx) {
     this.data.forEach( number => this.add(ctx, number))
     return this;
   }
@@ -58,7 +58,7 @@ class AlgorithmVisualiser {
     ctx.restore();
   }
 
-  performOn(ctx, fn) {
+  performOn(fn, ctx) {
     return new Promise((res, rej) => {
       fn(this.data.slice(), {
         interrupter: this.interrupter.bind(this),

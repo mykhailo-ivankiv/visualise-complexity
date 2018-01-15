@@ -11,19 +11,20 @@ const numbers = range(NUMBER_OF_NUMBERS, () => getRandom(1, NUMBER_OF_NUMBERS + 
 const badCanvas = new Canvas (".content__algo_bad");
 const goodCanvas = new Canvas (".content__algo_good");
 const {width, height} = badCanvas;
+
 const a = new AlgorithmVisualiser(numbers, width, height);
 
-a.drawOn(badCanvas.ctx)
- .drawOn(goodCanvas.ctx);
+a.drawDataOn(badCanvas.ctx)
+ .drawDataOn(goodCanvas.ctx);
 
-a.performOn(badCanvas.ctx, badAlgorithm)
+a.performOn(badAlgorithm, badCanvas.ctx)
     .then ( value => {
         document.querySelector(".result__bad").innerHTML =
         value.map( el => `<span class="result__missing-numbers result__missing-numbers_bad">${el}</span>`).join("")
-    })
+    });
 
-a.performOn(goodCanvas.ctx, goodAlgorithm)
+a.performOn(goodAlgorithm, goodCanvas.ctx)
     .then ( value => {
         document.querySelector(".result__good").innerHTML =
             value.map( el => `<span class="result__missing-numbers result__missing-numbers_good">${el}</span>`).join("")
-    })
+    });

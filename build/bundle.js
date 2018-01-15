@@ -124,22 +124,23 @@ const numbers = __webpack_require__.i(__WEBPACK_IMPORTED_MODULE_2__utils__["a" /
 const badCanvas = new __WEBPACK_IMPORTED_MODULE_1__Canvas__["a" /* default */] (".content__algo_bad");
 const goodCanvas = new __WEBPACK_IMPORTED_MODULE_1__Canvas__["a" /* default */] (".content__algo_good");
 const {width, height} = badCanvas;
+
 const a = new __WEBPACK_IMPORTED_MODULE_0__AlgorithmVisualiser__["a" /* default */](numbers, width, height);
 
-a.drawOn(badCanvas.ctx)
- .drawOn(goodCanvas.ctx);
+a.drawDataOn(badCanvas.ctx)
+ .drawDataOn(goodCanvas.ctx);
 
-a.performOn(badCanvas.ctx, __WEBPACK_IMPORTED_MODULE_4__badAlgorithm__["a" /* default */])
+a.performOn(__WEBPACK_IMPORTED_MODULE_4__badAlgorithm__["a" /* default */], badCanvas.ctx)
     .then ( value => {
         document.querySelector(".result__bad").innerHTML =
         value.map( el => `<span class="result__missing-numbers result__missing-numbers_bad">${el}</span>`).join("")
-    })
+    });
 
-a.performOn(goodCanvas.ctx, __WEBPACK_IMPORTED_MODULE_5__goodAlgorithm__["a" /* default */])
+a.performOn(__WEBPACK_IMPORTED_MODULE_5__goodAlgorithm__["a" /* default */], goodCanvas.ctx)
     .then ( value => {
         document.querySelector(".result__good").innerHTML =
             value.map( el => `<span class="result__missing-numbers result__missing-numbers_good">${el}</span>`).join("")
-    })
+    });
 
 /***/ }),
 /* 9 */
@@ -275,7 +276,7 @@ class AlgorithmVisualiser {
     return path;
   }
 
-  drawOn(ctx) {
+  drawDataOn(ctx) {
     this.data.forEach( number => this.add(ctx, number))
     return this;
   }
@@ -305,7 +306,7 @@ class AlgorithmVisualiser {
     ctx.restore();
   }
 
-  performOn(ctx, fn) {
+  performOn(fn, ctx) {
     return new Promise((res, rej) => {
       fn(this.data.slice(), {
         interrupter: this.interrupter.bind(this),

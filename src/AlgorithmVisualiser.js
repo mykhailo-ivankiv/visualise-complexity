@@ -36,26 +36,25 @@ class AlgorithmVisualiser {
   add(ctx, number) {
     const [x, y] = this.objects.get(number);
 
-    ctx.save();
-    ctx.fillStyle = `#2980b9`;
-    ctx.fill(this.getShape(x, y));
-    ctx.fillStyle = "#ecf0f1";
-    ctx.fillText(number, x - 6, y + 3);
-    ctx.restore();
+    ctx
+        .append("circle")
+        .attr("cx", x)
+        .attr("cy", y)
+        .attr("r", 10);
+
+    ctx
+        .append("text")
+        .attr("x", x)
+        .attr("y", y)
+        .attr("dx", -5)
+        .attr("dy", 3)
+        .text(number);
   }
 
   remove(ctx, number) {
     const [x, y] = this.objects.get(number);
-    ctx.save();
-    ctx.globalCompositeOperation = "destination-out";
-    ctx.fillStyle = `black`;
-    ctx.fill(this.getShape(x, y));
-    ctx.restore();
-
-    ctx.save();
-    ctx.fillStyle = `#2980b9`;
-    ctx.fillText(number, x - 6, y + 3);
-    ctx.restore();
+    ctx.select(`circle[cx="${x}"][cy="${y}"]`)
+      .remove()
   }
 
   performOn(fn, ctx) {

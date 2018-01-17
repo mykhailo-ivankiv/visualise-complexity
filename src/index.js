@@ -16,15 +16,19 @@ const bad = d3
   .select(".page__content")
   .append("svg")
   .attr("class", "content__algo content__algo_bad")
-  .attr("height", 300)
-  .attr("width", 300);
+  .attr("preserveAspectRatio", "xMidYMid")
+  .attr("viewBox", "0 0 300 300")
+  .attr("height", "100%")
+  .attr("width", "100%");
 
 const good = d3
   .select(".page__content")
   .append("svg")
   .attr("class", "content__algo content__algo_good")
-  .attr("height", 300)
-  .attr("width", 300);
+  .attr("preserveAspectRatio", "xMidYMid")
+  .attr("viewBox", "0 0 300 300")
+  .attr("height", "100%")
+  .attr("width", "100%");
 
 a.drawDataOn(bad).drawDataOn(good);
 

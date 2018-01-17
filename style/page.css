@@ -1,11 +1,11 @@
 .page__tittle {
-    font-family: "PT Sans", serif;
+    font-family: "PT Serif", serif;
+    line-height: 1.2;
     margin: 2% auto auto;
     color: rgba(52, 73, 94, 1.0);
 }
 
 .page__content {
-    margin-top: 10px;
-    margin-left: 10px;
-    margin-right: 10px;
+    height: 50vh;
+    margin: 10px 10px 20px;
 }

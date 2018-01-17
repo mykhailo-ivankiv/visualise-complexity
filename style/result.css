@@ -1,6 +1,7 @@
 .result {
   text-align: center;
   font-family: monospace;
+  font-size: 19px;
 }
 
 .result__good {

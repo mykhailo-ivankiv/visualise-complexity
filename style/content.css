@@ -13,7 +13,8 @@
 
 .content__algo text {
     /*TODO: BEM! */
-    font-size: 10px;
+    font-size: 8px;
+    font-family: "PT Mono", monospace;
     fill: #ecf0f1;
 }
 

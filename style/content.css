@@ -1,0 +1,28 @@
+.content__algo {
+    border-radius: 3px;
+    margin-top: 10px;
+    width: 49%;
+}
+
+.content__algo circle {
+    /*TODO: BEM! */
+    fill:#2980b9;
+    stroke: #ecf0f1;
+    stroke-width: 2;
+}
+
+.content__algo text {
+    /*TODO: BEM! */
+    font-size: 10px;
+    fill: #ecf0f1;
+}
+
+.content__algo_bad {
+    outline:  2px solid #c0392b;
+}
+
+.content__algo_good {
+    float: right;
+    outline: 1.5px solid #16a085;
+
+}

@@ -29,7 +29,7 @@ class AlgorithmVisualiser {
   }
 
   drawDataOn(ctx) {
-    this.data.forEach( number => this.add(ctx, number))
+    this.data.forEach(number => this.add(ctx, number));
     return this;
   }
 
@@ -37,24 +37,23 @@ class AlgorithmVisualiser {
     const [x, y] = this.objects.get(number);
 
     ctx
-        .append("circle")
-        .attr("cx", x)
-        .attr("cy", y)
-        .attr("r", 10);
+      .append("circle")
+      .attr("cx", x)
+      .attr("cy", y)
+      .attr("r", 10);
 
     ctx
-        .append("text")
-        .attr("x", x)
-        .attr("y", y)
-        .attr("dx", -5)
-        .attr("dy", 3)
-        .text(number);
+      .append("text")
+      .attr("x", x)
+      .attr("y", y)
+      .attr("dx", -5)
+      .attr("dy", 3)
+      .text(number);
   }
 
   remove(ctx, number) {
     const [x, y] = this.objects.get(number);
-    ctx.select(`circle[cx="${x}"][cy="${y}"]`)
-      .remove()
+    ctx.select(`circle[cx="${x}"][cy="${y}"]`).remove();
   }
 
   performOn(fn, ctx) {

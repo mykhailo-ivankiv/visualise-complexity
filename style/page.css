@@ -1,0 +1,11 @@
+.page__tittle {
+    font-family: "PT Sans", serif;
+    margin: 2% auto auto;
+    color: rgba(52, 73, 94, 1.0);
+}
+
+.page__content {
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
